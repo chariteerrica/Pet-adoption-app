@@ -1,50 +1,41 @@
-import path from "path";
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ✅ Use ESM properly OR CommonJS properly — here I'll use CommonJS for simplicity
+const path = require("path");
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const petRoutes = require('./routes/petRoutes');
-
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 
-// ✅ Proper CORS config
+// CORS config
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.CLIENT_URL || "http://localhost:3000",
   credentials: true,
 };
-app.use(cors(corsOptions)); // MUST be before all routes
+app.use(cors(corsOptions));
+app.use(express.json());
 
-app.use(express.json()); // To parse JSON bodies
+//  Routes
+app.use("/api/pets", require("./routes/petRoutes"));
+app.use("/api/adoptions", require("./routes/adoptionRoutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
 
-// ✅ If you’re manually setting headers, do it after CORS middleware
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  next();
-});
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Routes
-app.use('/api/pets', require('./routes/petRoutes'));
-app.use('/api/adoptions', require('./routes/adoptionRoutes'));
-app.use('/api/auth', require('./routes/authRoutes'));
+//  Serve frontend 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
 
-// ✅ DB + Server
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(process.env.PORT || 5001, () => {
-      console.log('Server running on port 5001');
-    });
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
+}
 
-  //frontend build
-app.use(express.static(path.join(__dirname, "client/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/build", "index.html"));
-});
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
