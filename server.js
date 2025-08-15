@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -29,6 +30,15 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.get("/ping", (_, res) => res.send("Server alive"));
 
 const PORT = process.env.PORT || 5001;
+
+// Serve React build in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+  
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 
 // MongoDB connection
 mongoose
