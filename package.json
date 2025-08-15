@@ -4,7 +4,6 @@
   "homepage": "https://frontend-v5t3.onrender.com",
   "private": true,
   "proxy": "http://localhost:5001",
-  
   "engines": {
     "node": "20.x"
   },
@@ -40,6 +39,7 @@
     "react-router-dom": "^6.22.3",
     "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.5",
+    "serve": "^14.2.4",
     "web-vitals": "^5.0.3"
   }
 }
