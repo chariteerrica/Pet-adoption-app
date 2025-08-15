@@ -7,9 +7,14 @@ const mongoose = require("mongoose");
 dotenv.config();
 const app = express();
 
-// Use environment variable for CORS origin
+// Middleware
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
+
+// Health check route for Render
+app.get("/ping", (req, res) => {
+  res.send("Server is alive");
+});
 
 // API routes
 app.use("/api/pets", require("./routes/petRoutes"));
@@ -19,30 +24,36 @@ app.use("/api/auth", require("./routes/authRoutes"));
 // Serve React build in production
 if (process.env.NODE_ENV === "production") {
   const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "client", "build")));
+  app.use(express.static(path.join(__dirname, "client/build")));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
 }
 
 const PORT = process.env.PORT || 5001;
 
-// Timeout safeguard — start server even if MongoDB is slow
-async function startServer() {
-  try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // 10 seconds
-    });
+// MongoDB connection with Render-friendly settings
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000, // Shorter initial timeout (5 seconds)
+  socketTimeoutMS: 45000,         // 45-second idle socket timeout
+  connectTimeoutMS: 10000,        // 10-second connection attempt timeout
+  keepAlive: true,                // Keep connection alive
+  keepAliveInitialDelay: 300000   // 5-minute keep-alive ping
+})
+  .then(() => {
     console.log("✅ MongoDB connected");
-  } catch (err) {
-    console.error("⚠️ MongoDB connection error:", err.message);
-  }
-
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1); // Fail fast if DB is unreachable
   });
-}
 
-startServer();
+// Graceful shutdown for Render restarts
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received: closing server");
+  mongoose.connection.close(false, () => {
+    console.log("MongoDB connection closed");
+    process.exit(0);
+  });
+});
