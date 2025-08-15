@@ -6,20 +6,14 @@ require("dotenv").config();
 const app = express();
 
 // CORS configuration
-const allowedOrigins = [
-  process.env.CLIENT_URL,          // Production client URL
-  "http://localhost:3000",         // Local React dev server
-];
+const allowedOrigins = 
+  process.env.NODE_ENV === "production"
+  ? process.env.CLIENT_URL          // from render .env
+  :"http://localhost:3000";         // for local dev
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
   })
 );
