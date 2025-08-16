@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authenticateJWT = require('../middleware/authenticateJWT');
-const petController = require('../controllers/petController');
+const { getPets, getPetById } = require("../controllers/petController");
 
-// ✅ Protect the route and use the controller
-router.get('/', petController.getAllPets);
+// All routes are **relative paths**
+router.get("/", getPets);
+router.get("/:id", getPetById);
 
 module.exports = router;
