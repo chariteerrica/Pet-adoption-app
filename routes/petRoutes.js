@@ -1,11 +1,15 @@
+// routes/petRoutes.js
 const express = require("express");
 const router = express.Router();
-const { getAllPets, getPetById, createPet } = require("../controllers/petController");
+const {
+  getAllPets,
+  getPetById,
+  createPet,
+} = require("../controllers/petController");
 
-// All routes are **relative paths**
-router.get("/", getAllPets);
-router.get("/:id", getPetById);
-router.post("/", createPet);
-
+// Routes
+router.get("/", getAllPets);   // GET all pets
+router.get("/:id", getPetById); // GET pet by ID
+router.post("/", createPet);   // POST new pet
 
 module.exports = router;

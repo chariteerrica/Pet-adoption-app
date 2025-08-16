@@ -19,8 +19,6 @@ app.use(express.json());
 
 // API routes (relative paths ONLY!)
 app.use("/api/pets", require("./routes/petRoutes"));
-app.use("/api/adoptions", require("./routes/adoptionRoutes"));
-app.use("/api/auth", require("./routes/authRoutes"));
 
 // Serve React build in production
 if (process.env.NODE_ENV === "production") {
