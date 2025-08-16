@@ -50,5 +50,5 @@ const createPet = async (req, res) => {
 module.exports = {
   getAllPets,
   getPetById,
-  createPet,
+  createPet
 };
