@@ -23,9 +23,12 @@ mongoose
 
 // Routes
 app.use("/api/pets", require("./routes/petRoutes"));
+console.log("✅ Pet routes loaded");
 app.use("/api/adoptions", require("./routes/adoptionRoutes"));
+console.log("✅ Adoption routes loaded");
 app.use("/api/applications", require("./routes/applicationRoutes"));
-app.use("/api/auth", require("./routes/authRoutes"));
+console.log("✅ Application routes loaded");
+
 
 // Serve frontend (only if you’re deploying fullstack together)
 if (process.env.NODE_ENV === "production") {
