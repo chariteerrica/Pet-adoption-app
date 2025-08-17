@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createAdoption} = require('../controllers/adoptionController');
+const { createAdoption } = require('../controllers/adoptionController');
 
 router.post('/', createAdoption); 
 
