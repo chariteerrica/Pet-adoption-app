@@ -19,10 +19,11 @@ if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "client", "build");
   app.use(express.static(buildPath));
 
-  app.get("*", (_, res) => {
+  app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 }
+
 
 // --- Health Check ---
 app.get("/ping", (_, res) => res.send("Server alive"));
