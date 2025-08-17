@@ -15,14 +15,17 @@ app.use("/api/pets", require("./routes/petRoutes"));
 app.use("/api/adoptions", require("./routes/adoptionRoutes"));
 
 
+const path = require('path');
 if (process.env.NODE_ENV === "production") {
   const buildPath = path.join(__dirname, "client", "build");
   app.use(express.static(buildPath));
 
-  app.get("*", (req, res) => {
+  app.get("*", (_, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 }
+
+
 
 
 // --- Health Check ---
