@@ -34,9 +34,6 @@ function Pets() {
     <div style={overlayStyle}>
       <div className="pets-container">
         <div className="pets-grid">
-          {/* debug line */}
-          <div style={{ marginBottom: 8 }}>Count: {pets.length}</div>
-
           {pets.map((pet, i) => (
             <div key={pet._id || i} className="pet-card">
               <PetCard pet={pet} />
