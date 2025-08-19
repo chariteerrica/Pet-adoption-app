@@ -1,5 +1,5 @@
 import React from "react";
-import StyledButton from "../styles/StyledButton"; // adjust if path differs
+import StyledButton from "./styles/StyledButton";
 
 const cardStyle = {
   background: "#fff",
