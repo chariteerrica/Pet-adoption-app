@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+/*const jwt = require('jsonwebtoken');
 
 const authenticateJWT = (req, res, next) => {
     console.log('Incoming Authorization Header:', req.headers.authorization);
@@ -30,3 +30,4 @@ const authenticateJWT = (req, res, next) => {
 };
 
 module.exports = authenticateJWT;
+*/

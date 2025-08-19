@@ -12,47 +12,42 @@ function Pets() {
   useEffect(() => {
   async function fetchPets() {
     try {
-      const token = localStorage.getItem('token');
-      console.log('Token:', token); // 👈 Log token for debugging
+      const res = await axios.get("/api/pets");  // no token needed
+      const data = res.data;
 
-      if (!token) {
-        console.warn('No token found in localStorage');
-        return;
-      }
-      const backendUrl = process.env.REACT_APP_API_URL;
-
-      const res = await axios.get(`${backendUrl}/api/pets`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log('Fetched pets:', res.data);
-      setPets(res.data);
+      // make sure we always set an array
+      const list = Array.isArray(data) ? data : (Array.isArray(data?.pets) ? data.pets : []);
+      console.log("Fetched pets:", list);
+      setPets(list);
     } catch (err) {
-      console.error('Error fetching pets:', err);
+      console.error("Error fetching pets:", err);
+      setPets([]);
     }
   }
 
   fetchPets();
 }, []);
 
+
   return (
-    <div style={wrapperStyle}>
-      <div style={overlayStyle}>
-        <div className="pets-container">
-          <div className="pets-grid">
-      {pets.map((pet) => (
-        <div key={pet._id} className="pet-card">
-          <PetCard pet={pet} />
-        </div>
-      ))}
+  <div style={wrapperStyle}>
+    <div style={overlayStyle}>
+      <div className="pets-container">
+        <div className="pets-grid">
+          {/* debug line */}
+          <div style={{ marginBottom: 8 }}>Count: {pets.length}</div>
+
+          {pets.map((pet, i) => (
+            <div key={pet._id || i} className="pet-card">
+              <PetCard pet={pet} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
-    </div>
+  </div>
+);
 
-  );
 
 
 }

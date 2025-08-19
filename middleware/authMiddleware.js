@@ -1,4 +1,4 @@
-const protect = async (req, res, next) => {
+/*const protect = async (req, res, next) => {
   console.log('Auth header received:', req.headers.authorization);
 
   let token;
@@ -30,4 +30,4 @@ const protect = async (req, res, next) => {
 };
 
 module.exports = { protect };
-
+*/
